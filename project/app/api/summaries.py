@@ -7,7 +7,6 @@ from app.api import crud
 from app.models.pydantic import SummaryPayloadSchema, SummaryResponseSchema
 from app.models.tortoise import SummarySchema
 
-
 router = APIRouter()
 
 
@@ -15,10 +14,7 @@ router = APIRouter()
 async def create_summary(payload: SummaryPayloadSchema) -> SummaryResponseSchema:
     summary_id = await crud.post(payload)
 
-    response_object = {
-        "id": summary_id,
-        "url": payload.url
-    }
+    response_object = {"id": summary_id, "url": payload.url}
     return response_object
 
 
@@ -26,7 +22,9 @@ async def create_summary(payload: SummaryPayloadSchema) -> SummaryResponseSchema
 async def read_summary(id: int) -> SummarySchema:
     summary = await crud.get(id)
     if not summary:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Summary not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Summary not found"
+        )
     return summary
 
 
