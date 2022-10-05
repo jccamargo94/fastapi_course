@@ -5,11 +5,11 @@ import logging  # new
 import os
 
 from fastapi import FastAPI
-from tortoise import Tortoise, run_async  # new
+from tortoise import Tortoise, run_async
 from tortoise.contrib.fastapi import register_tortoise
 
 
-log = logging.getLogger("uvicorn") # new
+log = logging.getLogger("uvicorn")
 
 
 TORTOISE_ORM = {
@@ -33,7 +33,6 @@ def init_db(app: FastAPI) -> None:
     )
 
 
-# new
 async def generate_schema() -> None:
     log.info("Initializing Tortoise...")
 

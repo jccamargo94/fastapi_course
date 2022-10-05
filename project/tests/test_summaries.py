@@ -2,9 +2,6 @@
 
 
 import json
-from urllib import response
-
-import pytest
 
 
 def test_create_summary(test_app_with_db):
