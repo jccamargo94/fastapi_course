@@ -4,8 +4,8 @@
 import json
 from datetime import datetime
 
-from fastapi import status
 import pytest
+from fastapi import status
 
 from app.api import crud, summaries
 
@@ -19,6 +19,10 @@ def test_create_summary(test_app, monkeypatch):
 
     monkeypatch.setattr(crud, "post", mock_post)
 
+    def mock_generate_summary(summary_id, url):
+        return None
+
+    monkeypatch.setattr(summaries, "generate_summary", mock_generate_summary)
     response = test_app.post("/summaries/", data=json.dumps(test_request_payload))
     assert response.status_code == status.HTTP_201_CREATED
     assert response.json() == test_response_payload
@@ -84,7 +88,7 @@ def test_read_all_summaries(test_app, monkeypatch):
             "url": "https://testdrivenn.io",
             "summary": "summary",
             "created_at": datetime.utcnow().isoformat(),
-        }
+        },
     ]
 
     async def mock_get_all():
@@ -128,6 +132,7 @@ def test_remove_summary_incorrect_id(test_app, monkeypatch):
     assert response.status_code == status.HTTP_404_NOT_FOUND
     assert response.json()["detail"] == "Summary not found"
 
+
 def test_update_summary(test_app, monkeypatch):
     test_request_payload = {"url": "https://foo.bar", "summary": "updated"}
     test_response_payload = {
@@ -142,7 +147,10 @@ def test_update_summary(test_app, monkeypatch):
 
     monkeypatch.setattr(crud, "put", mock_put)
 
-    response = test_app.put("/summaries/1/", data=json.dumps(test_request_payload),)
+    response = test_app.put(
+        "/summaries/1/",
+        data=json.dumps(test_request_payload),
+    )
     assert response.status_code == status.HTTP_200_OK
     assert response.json() == test_response_payload
 
@@ -200,7 +208,9 @@ def test_update_summary(test_app, monkeypatch):
         ],
     ],
 )
-def test_update_summary_invalid(test_app, monkeypatch, summary_id, payload, status_code, detail):
+def test_update_summary_invalid(
+    test_app, monkeypatch, summary_id, payload, status_code, detail
+):
     async def mock_put(id, payload):
         return None
 
